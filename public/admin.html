@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Admin - Global Arts Network</title>
+  <link rel="stylesheet" href="/styles.css">
+  <style>
+    body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; padding:20px; }
+    h1 { margin-bottom: 10px; }
+    .token-group { margin-bottom: 20px; }
+    table { width: 100%; border-collapse: collapse; }
+    th, td { padding: 8px; border:1px solid #ddd; text-align:left; }
+    th { background:#f0f0f0; }
+    button.delete { color:#e74c3c; border:none; background:transparent; cursor:pointer; }
+  </style>
+</head>
+<body>
+  <h1>Admin panel</h1>
+  <div class="token-group">
+    <label for="adminToken">Admin token:</label>
+    <input type="password" id="adminToken" placeholder="enter token to enable deletes">
+    <button id="refresh">Refresh list</button>
+  </div>
+  <table id="pointsTable">
+    <thead><tr><th>Name</th><th>City</th><th>Country</th><th>Email</th><th>Type</th><th>Actions</th></tr></thead>
+    <tbody></tbody>
+  </table>
+
+  <script>
+    async function loadPoints() {
+      const res = await fetch('/api/points');
+      const data = await res.json();
+      const tbody = document.querySelector('#pointsTable tbody');
+      tbody.innerHTML = '';
+      data.features.forEach(f => {
+        const props = f.properties;
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${props.name}</td><td>${props.city}</td><td>${props.country}</td><td>${props.email || ''}</td><td>${props.type}</td>`;
+        const td = document.createElement('td');
+        const btn = document.createElement('button');
+        btn.textContent = 'Delete';
+        btn.className = 'delete';
+        btn.addEventListener('click', () => deleteEntry(f.properties.id));
+        td.appendChild(btn);
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      });
+    }
+    async function deleteEntry(id) {
+      const token = document.getElementById('adminToken').value;
+      if (!confirm('Delete this entry?')) return;
+      const url = '/api/submit/' + id + (token ? '?token=' + encodeURIComponent(token) : '');
+      const res = await fetch(url, { method: 'DELETE' });
+      if (res.ok) {
+        await loadPoints();
+      } else {
+        alert('Failed to delete: ' + await res.text());
+      }
+    }
+    document.getElementById('refresh').addEventListener('click', loadPoints);
+    loadPoints();
+  </script>
+</body>
+</html>
