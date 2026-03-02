@@ -23,7 +23,7 @@
     <button id="refresh">Refresh list</button>
   </div>
   <table id="pointsTable">
-    <thead><tr><th>Name</th><th>City</th><th>Country</th><th>Email</th><th>Type</th><th>Actions</th></tr></thead>
+    <thead><tr><th>Name</th><th>City</th><th>Country</th><th>Email</th><th>Type</th><th>Medium</th><th>Affiliation</th><th>Bio</th><th>Actions</th></tr></thead>
     <tbody></tbody>
   </table>
 
@@ -36,7 +36,7 @@
       data.features.forEach(f => {
         const props = f.properties;
         const tr = document.createElement('tr');
-        tr.innerHTML = `<td>${props.name}</td><td>${props.city}</td><td>${props.country}</td><td>${props.email || ''}</td><td>${props.type}</td>`;
+        tr.innerHTML = `<td>${props.name}</td><td>${props.city}</td><td>${props.country}</td><td>${props.email || ''}</td><td>${props.type}</td><td>${props.medium||''}</td><td>${props.affiliation||''}</td><td>${(props.biography||'').substring(0,60)}</td>`;
         const td = document.createElement('td');
         const btn = document.createElement('button');
         btn.textContent = 'Delete';

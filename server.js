@@ -124,6 +124,7 @@ app.get("/api/points", async (req, res) => {
         name: d.name,
         country: d.country,
         city: d.city,
+        email: d.email || "",
         website: d.website || "",
         medium: d.medium || "",
         affiliation: d.affiliation || "",

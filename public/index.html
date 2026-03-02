@@ -301,14 +301,14 @@
         collective: '#1abc9c',
         other: '#7f8c8d'
       };
-      // icon HTML for each type (FontAwesome)
+      // icon HTML for each type (FontAwesome); we'll render within a colored circle
       const typeIcons = {
-        artist: '<i class="fa-solid fa-paint-brush" style="color:#e74c3c;font-size:18px;"></i>',
-        curator: '<i class="fa-solid fa-user-tie" style="color:#f39c12;font-size:18px;"></i>',
-        institution: '<i class="fa-solid fa-building" style="color:#9b59b6;font-size:18px;"></i>',
-        gallery: '<i class="fa-solid fa-camera" style="color:#3498db;font-size:18px;"></i>',
-        collective: '<i class="fa-solid fa-users" style="color:#1abc9c;font-size:18px;"></i>',
-        other: '<i class="fa-solid fa-map-marker-alt" style="color:#7f8c8d;font-size:18px;"></i>'
+        artist: '<i class="fa-solid fa-paint-brush" style="color:white;font-size:14px;"></i>',
+        curator: '<i class="fa-solid fa-user-tie" style="color:white;font-size:14px;"></i>',
+        institution: '<i class="fa-solid fa-building" style="color:white;font-size:14px;"></i>',
+        gallery: '<i class="fa-solid fa-camera" style="color:white;font-size:14px;"></i>',
+        collective: '<i class="fa-solid fa-users" style="color:white;font-size:14px;"></i>',
+        other: '<i class="fa-solid fa-map-marker-alt" style="color:white;font-size:14px;"></i>'
       };
       // use a light, modern base tile (CartoDB Positron)
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
@@ -370,12 +370,14 @@
 
       const fill = typeColors[props.type] || '#7f8c8d';
       const iconHtml = typeIcons[props.type] || typeIcons.other;
+      // wrap icon inside a colored circle so something is visible even if the font fails
+      const html = `<div style="background:${fill};width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;">${iconHtml}</div>`;
       const marker = L.marker([coords[1], coords[0]], {
         icon: L.divIcon({
           className: 'custom-div-icon',
-          html: iconHtml,
-          iconSize: [24,24],
-          iconAnchor: [12,12]
+          html,
+          iconSize: [28,28],
+          iconAnchor: [14,14]
         })
       }).addTo(markersLayer);
 
