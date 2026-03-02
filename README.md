@@ -75,7 +75,8 @@ Create a `.env` file (optional):
 
 ```bash
 MONGODB_URI=mongodb://127.0.0.1:27017/arts-network-map
-ADMIN_TOKEN=your_admin_token_here
+# ADMIN_TOKEN defaults to 'admintoken' if not set
+ADMIN_TOKEN=admintoken
 PORT=3000
 ```
 
@@ -97,7 +98,7 @@ cd arts-network
 
 ```
 - Visit `/admin` to view entries.
-- Provide `ADMIN_TOKEN` (if set) to authorize deletions; use the Delete button to remove entries.
+- Provide `ADMIN_TOKEN` (default `admintoken` if not configured) to authorize deletions; use the Delete button to remove entries.
 
 
 
