@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Global Arts Network</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p1Cm+Yk0K8V+0PZc+Lp1z0pEbZbGIkeodZQlO/k5XBgG6XgrEbncFlyw3Ez35OyiD2vN0zmUadorH+rlz9YvYg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/styles.css" />
   <style>
     * {
@@ -164,6 +165,11 @@
       text-decoration: underline;
     }
 
+    .custom-div-icon {
+      background: transparent;
+      border: none;
+    }
+
     @media (max-width: 768px) {
       main {
         flex-direction: column;
@@ -295,6 +301,15 @@
         collective: '#1abc9c',
         other: '#7f8c8d'
       };
+      // icon HTML for each type (FontAwesome)
+      const typeIcons = {
+        artist: '<i class="fa-solid fa-paint-brush" style="color:#e74c3c;font-size:18px;"></i>',
+        curator: '<i class="fa-solid fa-user-tie" style="color:#f39c12;font-size:18px;"></i>',
+        institution: '<i class="fa-solid fa-building" style="color:#9b59b6;font-size:18px;"></i>',
+        gallery: '<i class="fa-solid fa-camera" style="color:#3498db;font-size:18px;"></i>',
+        collective: '<i class="fa-solid fa-users" style="color:#1abc9c;font-size:18px;"></i>',
+        other: '<i class="fa-solid fa-map-marker-alt" style="color:#7f8c8d;font-size:18px;"></i>'
+      };
       // use a light, modern base tile (CartoDB Positron)
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
         attribution: "© OpenStreetMap contributors © CARTO",
@@ -308,8 +323,10 @@
       legend.onAdd = function(map) {
         const div = L.DomUtil.create('div', 'info legend');
         let labels = [];
-        for (const [type, color] of Object.entries(typeColors)) {
-          labels.push(`<i style="background:${color};width:12px;height:12px;display:inline-block;margin-right:6px;border-radius:50%;"></i>${type.charAt(0).toUpperCase()+type.slice(1)}`);
+        for (const type of Object.keys(typeColors)) {
+          const color = typeColors[type];
+          const icon = typeIcons[type] || typeIcons.other;
+          labels.push(`${icon}&nbsp;${type.charAt(0).toUpperCase()+type.slice(1)}`);
         }
         div.innerHTML = labels.join('<br>');
         div.style.background = 'rgba(255,255,255,0.8)';
@@ -352,13 +369,14 @@
       const id = props.id;
 
       const fill = typeColors[props.type] || '#7f8c8d';
-      const marker = L.circleMarker([coords[1], coords[0]], {
-        radius: 8,
-        fillColor: fill,
-        color: "#fff",
-        weight: 1.5,
-        opacity: 1,
-        fillOpacity: 0.9
+      const iconHtml = typeIcons[props.type] || typeIcons.other;
+      const marker = L.marker([coords[1], coords[0]], {
+        icon: L.divIcon({
+          className: 'custom-div-icon',
+          html: iconHtml,
+          iconSize: [24,24],
+          iconAnchor: [12,12]
+        })
       }).addTo(markersLayer);
 
       // Create popup content
