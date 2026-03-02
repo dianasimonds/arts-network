@@ -48,7 +48,8 @@
       });
     }
     async function deleteEntry(id) {
-      const token = document.getElementById('adminToken').value;
+      let token = document.getElementById('adminToken').value;
+      if (!token) token = 'admintoken'; // default if not provided
       if (!confirm('Delete this entry?')) return;
       const url = '/api/submit/' + id + (token ? '?token=' + encodeURIComponent(token) : '');
       const res = await fetch(url, { method: 'DELETE' });
