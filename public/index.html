@@ -286,6 +286,15 @@
     } else {
       // Initialize map
       const map = L.map("map", { zoomControl: false }).setView([20, 0], 2);
+      // color scheme for different types
+      const typeColors = {
+        artist: '#e74c3c',
+        curator: '#f39c12',
+        institution: '#9b59b6',
+        gallery: '#3498db',
+        collective: '#1abc9c',
+        other: '#7f8c8d'
+      };
       // use a light, modern base tile (CartoDB Positron)
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
         attribution: "© OpenStreetMap contributors © CARTO",
@@ -293,6 +302,23 @@
       }).addTo(map);
       // move zoom control to top-right where it interferes less with sidebar
       L.control.zoom({ position: 'topright' }).addTo(map);
+
+      // add legend showing color for each type
+      const legend = L.control({ position: 'bottomright' });
+      legend.onAdd = function(map) {
+        const div = L.DomUtil.create('div', 'info legend');
+        let labels = [];
+        for (const [type, color] of Object.entries(typeColors)) {
+          labels.push(`<i style="background:${color};width:12px;height:12px;display:inline-block;margin-right:6px;border-radius:50%;"></i>${type.charAt(0).toUpperCase()+type.slice(1)}`);
+        }
+        div.innerHTML = labels.join('<br>');
+        div.style.background = 'rgba(255,255,255,0.8)';
+        div.style.padding = '6px 8px';
+        div.style.fontSize = '12px';
+        div.style.borderRadius = '4px';
+        return div;
+      };
+      legend.addTo(map);
 
       // Markers layer
       let markersLayer = L.featureGroup().addTo(map);
@@ -325,9 +351,10 @@
       const props = feature.properties;
       const id = props.id;
 
+      const fill = typeColors[props.type] || '#7f8c8d';
       const marker = L.circleMarker([coords[1], coords[0]], {
         radius: 8,
-        fillColor: "#e74c3c",
+        fillColor: fill,
         color: "#fff",
         weight: 1.5,
         opacity: 1,
