@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Global Arts Network</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-p1Cm+Yk0K8V+0PZc+Lp1z0pEbZbGIkeodZQlO/k5XBgG6XgrEbncFlyw3Ez35OyiD2vN0zmUadorH+rlz9YvYg==" crossorigin="anonymous" referrerpolicy="no-referrer" />
   <link rel="stylesheet" href="/styles.css" />
   <style>
     * {
@@ -301,14 +300,14 @@
         collective: '#1abc9c',
         other: '#7f8c8d'
       };
-      // icon HTML for each type (FontAwesome); we'll render within a colored circle
+      // emoji character for each type; will appear inside colored circle
       const typeIcons = {
-        artist: '<i class="fa-solid fa-paint-brush" style="color:white;font-size:14px;"></i>',
-        curator: '<i class="fa-solid fa-user-tie" style="color:white;font-size:14px;"></i>',
-        institution: '<i class="fa-solid fa-building" style="color:white;font-size:14px;"></i>',
-        gallery: '<i class="fa-solid fa-camera" style="color:white;font-size:14px;"></i>',
-        collective: '<i class="fa-solid fa-users" style="color:white;font-size:14px;"></i>',
-        other: '<i class="fa-solid fa-map-marker-alt" style="color:white;font-size:14px;"></i>'
+        artist: '🎨',
+        curator: '👩‍💼',
+        institution: '🏛️',
+        gallery: '🖼️',
+        collective: '👥',
+        other: '📍'
       };
       // use a light, modern base tile (CartoDB Positron)
       L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
@@ -369,9 +368,9 @@
       const id = props.id;
 
       const fill = typeColors[props.type] || '#7f8c8d';
-      const iconHtml = typeIcons[props.type] || typeIcons.other;
-      // wrap icon inside a colored circle so something is visible even if the font fails
-      const html = `<div style="background:${fill};width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;">${iconHtml}</div>`;
+      const iconChar = typeIcons[props.type] || typeIcons.other;
+      // wrap symbol inside a colored circle
+      const html = `<div style="background:${fill};width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">${iconChar}</div>`;
       const marker = L.marker([coords[1], coords[0]], {
         icon: L.divIcon({
           className: 'custom-div-icon',
