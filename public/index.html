@@ -405,6 +405,30 @@
       markers[id] = marker;
     }
 
+    // Geocode city+country to lat/lng
+    async function geocodeLocation() {
+      const city = document.getElementById("city").value.trim();
+      const country = document.getElementById("country").value.trim();
+      if (!city || !country) return;
+      
+      try {
+        const query = `${city}, ${country}`;
+        const res = await fetch(
+          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
+        );
+        const results = await res.json();
+        if (results.length > 0) {
+          document.getElementById("lat").value = parseFloat(results[0].lat).toFixed(4);
+          document.getElementById("lng").value = parseFloat(results[0].lon).toFixed(4);
+        }
+      } catch (err) {
+        console.warn("Geocoding failed:", err);
+      }
+    }
+    
+    document.getElementById("city").addEventListener("blur", geocodeLocation);
+    document.getElementById("country").addEventListener("blur", geocodeLocation);
+
     // Form submission
     document.getElementById("submitForm").addEventListener("submit", async (e) => {
       e.preventDefault();
