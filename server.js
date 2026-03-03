@@ -125,8 +125,6 @@ app.get("/api/points", async (req, res) => {
         name: d.name,
         country: d.country,
         city: d.city,
-        address: d.address || "",
-        email: d.email || "",
         website: d.website || "",
         medium: d.medium || "",
         affiliation: d.affiliation || "",
@@ -140,6 +138,48 @@ app.get("/api/points", async (req, res) => {
     res.json({ type: "FeatureCollection", features });
   } catch (err) {
     console.error("❌ /api/points error:", err);
+    res.status(500).json({
+      error: "Server error",
+      message: err.message
+    });
+  }
+});
+
+// admin-only endpoint: returns all submissions including email (requires token)
+app.get("/api/admin/points", async (req, res) => {
+  const provided = req.query.token || req.headers['x-admin-token'];
+  const secret = process.env.ADMIN_TOKEN || 'admintoken';
+  if (secret && provided !== secret) {
+    return res.status(403).json({ error: "Forbidden" });
+  }
+
+  try {
+    const docs = await Submission.find({ status: "approved" })
+      .sort({ createdAt: -1 })
+      .limit(5000)
+      .lean();
+
+    const features = docs.map((d) => ({
+      type: "Feature",
+      geometry: d.location,
+      properties: {
+        id: d._id,
+        type: d.type,
+        name: d.name,
+        country: d.country,
+        city: d.city,
+        address: d.address || "",
+        email: d.email || "",
+        website: d.website || "",
+        medium: d.medium || "",
+        affiliation: d.affiliation || "",
+        biography: d.biography || ""
+      }
+    }));
+
+    res.json({ type: "FeatureCollection", features });
+  } catch (err) {
+    console.error("❌ /api/admin/points error:", err);
     res.status(500).json({
       error: "Server error",
       message: err.message

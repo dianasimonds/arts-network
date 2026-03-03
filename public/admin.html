@@ -29,7 +29,14 @@
 
   <script>
     async function loadPoints() {
-      const res = await fetch('/api/points');
+      let token = document.getElementById('adminToken').value;
+      if (!token) token = 'admintoken';
+      const url = '/api/admin/points?token=' + encodeURIComponent(token);
+      const res = await fetch(url);
+      if (!res.ok) {
+        document.querySelector('#pointsTable tbody').innerHTML = '<tr><td colspan="10" style="text-align:center;color:#e74c3c;">Failed to load: check token</td></tr>';
+        return;
+      }
       const data = await res.json();
       const tbody = document.querySelector('#pointsTable tbody');
       tbody.innerHTML = '';
@@ -41,17 +48,15 @@
         const btn = document.createElement('button');
         btn.textContent = 'Delete';
         btn.className = 'delete';
-        btn.addEventListener('click', () => deleteEntry(f.properties.id));
+        btn.addEventListener('click', () => deleteEntry(f.properties.id, token));
         td.appendChild(btn);
         tr.appendChild(td);
         tbody.appendChild(tr);
       });
     }
-    async function deleteEntry(id) {
-      let token = document.getElementById('adminToken').value;
-      if (!token) token = 'admintoken'; // default if not provided
+    async function deleteEntry(id, token) {
       if (!confirm('Delete this entry?')) return;
-      const url = '/api/submit/' + id + (token ? '?token=' + encodeURIComponent(token) : '');
+      const url = '/api/submit/' + id + '?token=' + encodeURIComponent(token);
       const res = await fetch(url, { method: 'DELETE' });
       if (res.ok) {
         await loadPoints();
