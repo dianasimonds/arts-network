@@ -244,12 +244,12 @@
 
         <div class="form-group">
           <label for="lat">Latitude *</label>
-          <input type="number" id="lat" name="lat" step="0.0001" required />
+          <input type="number" id="lat" name="lat" step="0.0001" autocomplete="off" required />
         </div>
 
         <div class="form-group">
           <label for="lng">Longitude *</label>
-          <input type="number" id="lng" name="lng" step="0.0001" required />
+          <input type="number" id="lng" name="lng" step="0.0001" autocomplete="off" required />
         </div>
 
         <div class="form-group">
@@ -435,6 +435,12 @@
     document.getElementById("city").addEventListener("blur", geocodeLocation);
     document.getElementById("address").addEventListener("blur", geocodeLocation);
     document.getElementById("country").addEventListener("blur", geocodeLocation);
+
+    // clear any cached values for the coordinates on load so form starts blank
+    window.addEventListener('load', () => {
+      document.getElementById('lat').value = '';
+      document.getElementById('lng').value = '';
+    });
 
     // Form submission
     document.getElementById("submitForm").addEventListener("submit", async (e) => {
