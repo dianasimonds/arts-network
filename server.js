@@ -48,7 +48,7 @@ app.get('/admin', (req, res) => {
 app.post("/api/submit", async (req, res) => {
   console.log("POST /api/submit body:", req.body);
   try {
-    const { type, name, country, city, lat, lng, email, website, medium, affiliation, biography, disciplines, tags, description, consentPublic } = req.body;
+    const { type, name, country, city, address, lat, lng, email, website, medium, affiliation, biography, disciplines, tags, description, consentPublic } = req.body;
 
     if (!type || !name || !country || !city || !email) {
       return res.status(400).json({ error: "Missing required fields" });
@@ -67,6 +67,7 @@ app.post("/api/submit", async (req, res) => {
       name,
       country,
       city,
+      address: address || "",
       location: { type: "Point", coordinates: [lng, lat] },
       email,
       website: website || "",
@@ -124,6 +125,7 @@ app.get("/api/points", async (req, res) => {
         name: d.name,
         country: d.country,
         city: d.city,
+        address: d.address || "",
         email: d.email || "",
         website: d.website || "",
         medium: d.medium || "",
