@@ -472,7 +472,13 @@
     // Form submission
     document.getElementById("submitForm").addEventListener("submit", async (e) => {
       e.preventDefault();
-
+      const latVal = document.getElementById("lat").value;
+      const lngVal = document.getElementById("lng").value;
+      if (!latVal || !lngVal) {
+        document.getElementById('formMessage').textContent = 'Please enter a valid location (coordinates) before submitting.';
+        document.getElementById('formMessage').className = 'error';
+        return;
+      }
       const formData = {
         type: document.getElementById("type").value,
         name: document.getElementById("name").value,
@@ -480,8 +486,8 @@
         address: document.getElementById("address").value,
         country: document.getElementById("country").value,
         email: document.getElementById("email").value,
-        lat: parseFloat(document.getElementById("lat").value),
-        lng: parseFloat(document.getElementById("lng").value),
+        lat: parseFloat(latVal),
+        lng: parseFloat(lngVal),
         medium: document.getElementById("medium").value,
         website: document.getElementById("website").value,
         affiliation: document.getElementById("affiliation").value,
