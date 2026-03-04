@@ -245,14 +245,14 @@
           <input type="email" id="email" name="email" required placeholder="you@example.com" />
         </div>
 
-        <div id="coords-group" class="form-group" style="display:none;">
+        <div class="form-group">
           <label for="lat">Latitude *</label>
-          <input type="number" id="lat" name="lat" step="0.0001" autocomplete="off" readonly />
+          <input type="number" id="lat" name="lat" step="0.0001" autocomplete="off" readonly required />
         </div>
 
-        <div id="coords-group2" class="form-group" style="display:none;">
+        <div class="form-group">
           <label for="lng">Longitude *</label>
-          <input type="number" id="lng" name="lng" step="0.0001" autocomplete="off" readonly />
+          <input type="number" id="lng" name="lng" step="0.0001" autocomplete="off" readonly required />
         </div>
 
         <div class="form-group">
@@ -431,8 +431,6 @@
           const lngEl = document.getElementById("lng");
           latEl.value = parseFloat(results[0].lat).toFixed(4);
           lngEl.value = parseFloat(results[0].lon).toFixed(4);
-          document.getElementById('coords-group').style.display = '';
-          document.getElementById('coords-group2').style.display = '';
         }
       } catch (err) {
         console.warn("Geocoding failed:", err);
