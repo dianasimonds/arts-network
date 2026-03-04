@@ -435,9 +435,22 @@
       }
     }
     
-    document.getElementById("city").addEventListener("blur", geocodeLocation);
-    document.getElementById("address").addEventListener("blur", geocodeLocation);
-    document.getElementById("country").addEventListener("blur", geocodeLocation);
+    // clear coordinates when user edits location fields
+    function clearCoords() {
+      document.getElementById('lat').value = '';
+      document.getElementById('lng').value = '';
+    }
+
+    let geocodeTimer;
+    function scheduleGeocode() {
+      clearCoords();
+      clearTimeout(geocodeTimer);
+      geocodeTimer = setTimeout(geocodeLocation, 500);
+    }
+
+    document.getElementById("city").addEventListener("input", scheduleGeocode);
+    document.getElementById("address").addEventListener("input", scheduleGeocode);
+    document.getElementById("country").addEventListener("input", scheduleGeocode);
 
     // clear any cached values for the coordinates on load so form starts blank
     window.addEventListener('load', () => {
