@@ -452,10 +452,15 @@
     document.getElementById("address").addEventListener("input", scheduleGeocode);
     document.getElementById("country").addEventListener("input", scheduleGeocode);
 
-    // clear any cached values for the coordinates on load so form starts blank
+    // clear any cached/autofilled values on load so form starts blank
     window.addEventListener('load', () => {
-      document.getElementById('lat').value = '';
-      document.getElementById('lng').value = '';
+      // some browsers auto-fill immediately; use timeout to ensure we clear after
+      setTimeout(() => {
+        ['city','address','country','lat','lng'].forEach(id => {
+          const el = document.getElementById(id);
+          if (el) el.value = '';
+        });
+      }, 0);
     });
 
     // Form submission
