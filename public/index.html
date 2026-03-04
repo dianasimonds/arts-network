@@ -245,14 +245,14 @@
           <input type="email" id="email" name="email" required placeholder="you@example.com" />
         </div>
 
-        <div class="form-group">
+        <div id="coords-group" class="form-group" style="display:none;">
           <label for="lat">Latitude *</label>
-          <input type="number" id="lat" name="lat" step="0.0001" autocomplete="off" required />
+          <input type="number" id="lat" name="lat" step="0.0001" autocomplete="off" readonly />
         </div>
 
-        <div class="form-group">
+        <div id="coords-group2" class="form-group" style="display:none;">
           <label for="lng">Longitude *</label>
-          <input type="number" id="lng" name="lng" step="0.0001" autocomplete="off" required />
+          <input type="number" id="lng" name="lng" step="0.0001" autocomplete="off" readonly />
         </div>
 
         <div class="form-group">
@@ -427,8 +427,12 @@
         );
         const results = await res.json();
         if (results.length > 0) {
-          document.getElementById("lat").value = parseFloat(results[0].lat).toFixed(4);
-          document.getElementById("lng").value = parseFloat(results[0].lon).toFixed(4);
+          const latEl = document.getElementById("lat");
+          const lngEl = document.getElementById("lng");
+          latEl.value = parseFloat(results[0].lat).toFixed(4);
+          lngEl.value = parseFloat(results[0].lon).toFixed(4);
+          document.getElementById('coords-group').style.display = '';
+          document.getElementById('coords-group2').style.display = '';
         }
       } catch (err) {
         console.warn("Geocoding failed:", err);
@@ -452,9 +456,11 @@
     document.getElementById("address").addEventListener("input", scheduleGeocode);
     document.getElementById("country").addEventListener("input", scheduleGeocode);
 
-    // clear any cached/autofilled values on load so form starts blank
+    // clear the entire form on load; some browsers still auto-fill fields otherwise
     window.addEventListener('load', () => {
-      // some browsers auto-fill immediately; use timeout to ensure we clear after
+      const form = document.getElementById('submitForm');
+      if (form) form.reset();
+      // additional wipe after a tick to beat autofill
       setTimeout(() => {
         ['city','address','country','lat','lng'].forEach(id => {
           const el = document.getElementById(id);
