@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CATENARTS | Map</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="site-body map-page">
+  <header class="site-header">
+    <a class="brand" href="/">CATENARTS</a>
+    <div class="header-tools">
+      <div class="page-status">
+        <span class="page-status-label">Map status</span>
+        <span id="status">Loading map...</span>
+      </div>
+      <div class="menu-dropdown">
+        <button class="menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-menu">
+          Explore
+        </button>
+        <nav class="dropdown-menu" id="site-menu" data-menu>
+          <a href="/">Home</a>
+          <a href="/map.html">Map</a>
+          <a href="/artist-profile.html">Artist Profile</a>
+        </nav>
+      </div>
+    </div>
+  </header>
+
+  <div class="map-warning" id="warning"></div>
+
+  <main class="map-layout">
+    <aside class="form-panel">
+      <div class="panel-intro">
+        <p class="eyebrow">Submission Form</p>
+        <h1>Add your profile to the network</h1>
+        <p>Submit a basic profile to place yourself on the map and make your practice easier to discover.</p>
+      </div>
+
+      <form id="submitForm">
+        <div class="form-group">
+          <label for="adminToken">Admin token (for deleting points)</label>
+          <input type="password" id="adminToken" name="adminToken" placeholder="optional" />
+        </div>
+
+        <div class="form-group">
+          <label for="type">Type *</label>
+          <select id="type" name="type" required>
+            <option value="">Select...</option>
+            <option value="artist">Artist</option>
+            <option value="curator">Curator</option>
+            <option value="institution">Institution</option>
+            <option value="gallery">Gallery</option>
+            <option value="collective">Collective</option>
+            <option value="other">Other</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="name">Name *</label>
+          <input type="text" id="name" name="name" required />
+        </div>
+
+        <div class="form-group">
+          <label for="city">City *</label>
+          <input type="text" id="city" name="city" required />
+        </div>
+
+        <div class="form-group">
+          <label for="address">Address</label>
+          <input type="text" id="address" name="address" placeholder="e.g. 123 Main St" />
+        </div>
+
+        <div class="form-group">
+          <label for="country">Country *</label>
+          <input type="text" id="country" name="country" required />
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email *</label>
+          <input type="email" id="email" name="email" required placeholder="you@example.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="lat">Latitude *</label>
+          <input type="number" id="lat" name="lat" step="0.0001" autocomplete="off" readonly required />
+        </div>
+
+        <div class="form-group">
+          <label for="lng">Longitude *</label>
+          <input type="number" id="lng" name="lng" step="0.0001" autocomplete="off" readonly required />
+        </div>
+
+        <div class="form-group">
+          <label for="medium">Medium</label>
+          <input type="text" id="medium" name="medium" placeholder="e.g. Painting, Sculpture, Digital" />
+        </div>
+
+        <div class="form-group">
+          <label for="website">Website</label>
+          <input type="url" id="website" name="website" placeholder="https://example.com" />
+        </div>
+
+        <div class="form-group">
+          <label for="affiliation">Affiliation</label>
+          <input type="text" id="affiliation" name="affiliation" placeholder="e.g. Gallery name, Organization" />
+        </div>
+
+        <div class="form-group">
+          <label for="biography">Biography</label>
+          <textarea id="biography" name="biography" placeholder="Brief bio..."></textarea>
+        </div>
+
+        <button type="submit" class="primary-button">Add to Map</button>
+        <div id="formMessage"></div>
+      </form>
+    </aside>
+
+    <section class="map-stage">
+      <div class="map-overlay-card">
+        <p class="eyebrow">Live View</p>
+        <h2>Creative communities in motion</h2>
+        <p>Browse a quieter, more minimal network view with refined markers and softer geographic context.</p>
+      </div>
+      <div id="map"></div>
+    </section>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
+  <script src="/nav.js"></script>
+  <script>
+    if (location.protocol === "https:") {
+      const warnEl = document.getElementById("warning");
+      if (warnEl) {
+        warnEl.textContent = "The page is loaded via HTTPS but the backend is HTTP. Use http://localhost:3000 or configure HTTPS for the server.";
+      }
+    }
+
+    if (typeof L === "undefined") {
+      console.error("Leaflet failed to load");
+      document.getElementById("status").textContent = "Map library failed to load";
+    } else {
+      const map = L.map("map", {
+        zoomControl: false,
+        worldCopyJump: true
+      }).setView([20, 0], 2);
+      const typeColors = {
+        artist: "#cf6a4b",
+        curator: "#c89a46",
+        institution: "#6b78b8",
+        gallery: "#4d7f8b",
+        collective: "#5f8a66",
+        other: "#7b7f86"
+      };
+      const typeIcons = {
+        artist: "AR",
+        curator: "CU",
+        institution: "IN",
+        gallery: "GA",
+        collective: "CO",
+        other: "OT"
+      };
+
+      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_nolabels/{z}/{x}/{y}{r}.png", {
+        attribution: "© OpenStreetMap contributors © CARTO",
+        maxZoom: 19
+      }).addTo(map);
+
+      L.control.zoom({ position: "topright" }).addTo(map);
+
+      const legend = L.control({ position: "bottomright" });
+      legend.onAdd = function() {
+        const div = L.DomUtil.create("div", "map-legend");
+        const labels = Object.keys(typeColors).map((type) => {
+          const icon = typeIcons[type] || typeIcons.other;
+          const title = type.charAt(0).toUpperCase() + type.slice(1);
+          return `<span><strong style="--legend-accent:${typeColors[type]};">${icon}</strong>${title}</span>`;
+        });
+        div.innerHTML = labels.join("");
+        return div;
+      };
+      legend.addTo(map);
+
+      const markersLayer = L.featureGroup().addTo(map);
+
+      async function loadPoints() {
+        try {
+          const res = await fetch("/api/points");
+          const data = await res.json();
+
+          markersLayer.clearLayers();
+
+          data.features.forEach((feature) => {
+            addMarker(feature);
+          });
+
+          document.getElementById("status").textContent = `${data.features.length} entries on map`;
+        } catch (err) {
+          console.error("Error loading points:", err);
+          document.getElementById("status").textContent = "Error loading map";
+        }
+      }
+
+      function addMarker(feature) {
+        const coords = feature.geometry.coordinates;
+        const props = feature.properties;
+        const fill = typeColors[props.type] || "#707780";
+        const iconChar = typeIcons[props.type] || typeIcons.other;
+
+        const html = `<div class="map-pin" style="--pin-color:${fill};"><span>${iconChar}</span></div>`;
+        const marker = L.marker([coords[1], coords[0]], {
+          icon: L.divIcon({
+            className: "custom-div-icon",
+            html,
+            iconSize: [38, 38],
+            iconAnchor: [19, 19]
+          })
+        }).addTo(markersLayer);
+
+        let popupHtml = `<div class="popup-content">
+          <strong>${props.name}</strong>
+          <div>${props.city}, ${props.country}</div>`;
+
+        if (props.medium) {
+          popupHtml += `<strong>Medium</strong>${props.medium}`;
+        }
+        if (props.affiliation) {
+          popupHtml += `<strong>Affiliation</strong>${props.affiliation}`;
+        }
+        if (props.biography) {
+          popupHtml += `<strong>Bio</strong>${props.biography.substring(0, 120)}...`;
+        }
+        if (props.website) {
+          popupHtml += `<strong>Website</strong><a href="${props.website}" target="_blank" rel="noreferrer">${props.website}</a>`;
+        }
+
+        popupHtml += `<button data-id="${props.id}" class="delete-btn popup-delete">Delete</button>`;
+        popupHtml += `</div>`;
+
+        marker.bindPopup(popupHtml);
+      }
+
+      async function geocodeLocation() {
+        const city = document.getElementById("city").value.trim();
+        const address = document.getElementById("address").value.trim();
+        const country = document.getElementById("country").value.trim();
+        if (!city || !country) return;
+
+        try {
+          const query = address ? `${address}, ${city}, ${country}` : `${city}, ${country}`;
+          const res = await fetch(
+            `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
+          );
+          const results = await res.json();
+          if (results.length > 0) {
+            document.getElementById("lat").value = parseFloat(results[0].lat).toFixed(4);
+            document.getElementById("lng").value = parseFloat(results[0].lon).toFixed(4);
+          }
+        } catch (err) {
+          console.warn("Geocoding failed:", err);
+        }
+      }
+
+      function clearCoords() {
+        document.getElementById("lat").value = "";
+        document.getElementById("lng").value = "";
+      }
+
+      let geocodeTimer;
+      function scheduleGeocode() {
+        clearCoords();
+        clearTimeout(geocodeTimer);
+        geocodeTimer = setTimeout(geocodeLocation, 500);
+      }
+
+      document.getElementById("city").addEventListener("input", scheduleGeocode);
+      document.getElementById("address").addEventListener("input", scheduleGeocode);
+      document.getElementById("country").addEventListener("input", scheduleGeocode);
+
+      window.addEventListener("load", () => {
+        const form = document.getElementById("submitForm");
+        if (form) form.reset();
+
+        setTimeout(() => {
+          ["city", "address", "country", "lat", "lng"].forEach((id) => {
+            const el = document.getElementById(id);
+            if (el) el.value = "";
+          });
+        }, 0);
+      });
+
+      document.getElementById("submitForm").addEventListener("submit", async (e) => {
+        e.preventDefault();
+
+        const latVal = document.getElementById("lat").value;
+        const lngVal = document.getElementById("lng").value;
+        const messageEl = document.getElementById("formMessage");
+
+        if (!latVal || !lngVal) {
+          messageEl.innerHTML = '<div class="error">Please enter a valid location before submitting.</div>';
+          return;
+        }
+
+        const formData = {
+          type: document.getElementById("type").value,
+          name: document.getElementById("name").value,
+          city: document.getElementById("city").value,
+          address: document.getElementById("address").value,
+          country: document.getElementById("country").value,
+          email: document.getElementById("email").value,
+          lat: parseFloat(latVal),
+          lng: parseFloat(lngVal),
+          medium: document.getElementById("medium").value,
+          website: document.getElementById("website").value,
+          affiliation: document.getElementById("affiliation").value,
+          biography: document.getElementById("biography").value,
+          consentPublic: true
+        };
+
+        try {
+          const res = await fetch("/api/submit", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(formData)
+          });
+
+          const text = await res.text();
+          let result;
+
+          try {
+            result = text ? JSON.parse(text) : {};
+          } catch (parseErr) {
+            throw new Error(`Invalid JSON from server: ${text}`);
+          }
+
+          if (res.ok) {
+            messageEl.innerHTML = '<div class="success">Profile added to the map.</div>';
+            document.getElementById("submitForm").reset();
+            loadPoints();
+            setTimeout(() => {
+              messageEl.innerHTML = "";
+            }, 3000);
+          } else {
+            messageEl.innerHTML = `<div class="error">${result.error || result.message || "Unknown error"}</div>`;
+          }
+        } catch (err) {
+          let msg = err.message || "Network error";
+          if (location.protocol === "https:") {
+            msg += " (check that the server is running with HTTPS or use HTTP)";
+          }
+          messageEl.innerHTML = `<div class="error">${msg}</div>`;
+        }
+      });
+
+      if (navigator.geolocation) {
+        navigator.geolocation.getCurrentPosition(
+          (pos) => {
+            const { latitude, longitude } = pos.coords;
+            document.getElementById("lat").value = latitude.toFixed(4);
+            document.getElementById("lng").value = longitude.toFixed(4);
+            map.setView([latitude, longitude], 10);
+          },
+          () => {
+            loadPoints();
+          }
+        );
+      } else {
+        loadPoints();
+      }
+
+      document.body.addEventListener("click", async (e) => {
+        if (e.target.matches(".delete-btn")) {
+          const id = e.target.getAttribute("data-id");
+          const token = document.getElementById("adminToken").value;
+
+          if (!confirm("Are you sure you want to delete this entry?")) return;
+
+          try {
+            const res = await fetch(`/api/submit/${id}` + (token ? `?token=${encodeURIComponent(token)}` : ""), {
+              method: "DELETE"
+            });
+
+            if (res.ok) {
+              loadPoints();
+            } else {
+              const text = await res.text();
+              alert("Failed to delete: " + text);
+            }
+          } catch (err) {
+            alert("Delete request failed: " + err.message);
+          }
+        }
+      });
+
+      loadPoints();
+      setInterval(loadPoints, 5000);
+    }
+  </script>
+</body>
+</html>

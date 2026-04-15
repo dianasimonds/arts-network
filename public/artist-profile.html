@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CATENARTS | Artist Profile</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body class="site-body profile-page">
+  <div class="profile-background-layer" aria-hidden="true">
+    <div id="profile-background"></div>
+  </div>
+
+  <header class="site-header">
+    <a class="brand" href="/">CATENARTS</a>
+    <div class="menu-dropdown">
+      <button class="menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-menu">
+        Explore
+      </button>
+      <nav class="dropdown-menu" id="site-menu" data-menu>
+        <a href="/">Home</a>
+        <a href="/map.html">Map</a>
+        <a href="/artist-profile.html">Artist Profile</a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="profile-shell">
+    <section class="profile-hero">
+      <div class="profile-portrait">
+        <div class="portrait-frame">
+          <span>Test Artist</span>
+        </div>
+      </div>
+      <div class="profile-intro">
+        <p class="eyebrow">Sample Profile</p>
+        <h1>Maya Ellison</h1>
+        <p class="profile-role">Interdisciplinary artist based in Durham, North Carolina</p>
+        <p class="profile-summary">
+          Maya Ellison creates installations, print works, and community-based projects that examine memory, architecture, and regional storytelling. This page is a sample layout you can reuse later for real artist profiles.
+        </p>
+        <div class="tag-row">
+          <span>Installation</span>
+          <span>Printmaking</span>
+          <span>Community Practice</span>
+        </div>
+      </div>
+    </section>
+
+    <section class="profile-grid">
+      <article class="profile-card">
+        <h2>About</h2>
+        <p>
+          Ellison's practice draws from oral histories, site visits, and archival fragments. Her recent work layers handmade paper, projected light, and sculptural forms to explore how neighborhoods remember change.
+        </p>
+      </article>
+
+      <article class="profile-card">
+        <h2>Recent Exhibitions</h2>
+        <ul class="profile-list">
+          <li>2026, Folded Ground, Durham Project Space</li>
+          <li>2025, River Room, Triangle Contemporary</li>
+          <li>2024, Soft Structures, Common Thread Gallery</li>
+        </ul>
+      </article>
+
+      <article class="profile-card">
+        <h2>Details</h2>
+        <ul class="profile-list">
+          <li>Location: Durham, NC, USA</li>
+          <li>Affiliation: Independent artist and educator</li>
+          <li>Website: mayaellisonstudio.com</li>
+          <li>Email: hello@mayaellisonstudio.com</li>
+        </ul>
+      </article>
+
+      <article class="profile-card">
+        <h2>Artist Statement</h2>
+        <p>
+          "I’m interested in the emotional afterlife of built spaces. My work turns collected traces into temporary environments where viewers can move through layered histories rather than simply observe them."
+        </p>
+      </article>
+    </section>
+
+    <section class="profile-footer-panel">
+      <div>
+        <p class="eyebrow">Connection Point</p>
+        <h2>How this fits the network</h2>
+        <p>
+          A page like this can sit behind map entries later, giving each artist a richer identity beyond a pin and popup.
+        </p>
+      </div>
+      <a class="primary-link" href="/map.html">Back to the Map</a>
+    </section>
+
+    <aside class="profile-controls profile-controls-inline" aria-label="Profile background controls">
+      <p class="profile-controls-label">Background</p>
+
+      <div class="profile-controls-group">
+        <span>Palette</span>
+        <div class="profile-control-row">
+          <button class="profile-control-button is-active" type="button" data-palette="Earth">Earth</button>
+          <button class="profile-control-button" type="button" data-palette="Dusk">Dusk</button>
+          <button class="profile-control-button" type="button" data-palette="Moss">Moss</button>
+          <button class="profile-control-button" type="button" data-palette="Blue Hour">Blue Hour</button>
+        </div>
+      </div>
+
+      <div class="profile-controls-group">
+        <span>Motion</span>
+        <div class="profile-control-row">
+          <button class="profile-control-button is-active" type="button" data-motion="gentle">Gentle</button>
+          <button class="profile-control-button" type="button" data-motion="still">Still</button>
+          <button class="profile-control-button" type="button" data-motion="float">Float</button>
+        </div>
+      </div>
+    </aside>
+  </main>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
+  <script src="/artist-profile-background.js"></script>
+  <script src="/nav.js"></script>
+</body>
+</html>
