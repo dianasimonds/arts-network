@@ -121,7 +121,8 @@
     </aside>
 
     <section class="map-stage">
-      <div class="map-overlay-card">
+      <div class="map-overlay-card" id="mapOverlayCard">
+        <button class="map-overlay-close" id="mapOverlayClose" type="button" aria-label="Close map intro">×</button>
         <p class="eyebrow">Live View</p>
         <h2>Creative communities in motion</h2>
         <p>Browse a quieter, more minimal network view with refined markers and softer geographic context.</p>
@@ -133,6 +134,15 @@
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
   <script src="/nav.js"></script>
   <script>
+    const mapOverlayCard = document.getElementById("mapOverlayCard");
+    const mapOverlayClose = document.getElementById("mapOverlayClose");
+
+    if (mapOverlayCard && mapOverlayClose) {
+      mapOverlayClose.addEventListener("click", () => {
+        mapOverlayCard.classList.add("is-hidden");
+      });
+    }
+
     if (location.protocol === "https:") {
       const warnEl = document.getElementById("warning");
       if (warnEl) {
