@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CATENARTS | Profiles</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=profilespage1" />
+</head>
+<body class="site-body profiles-page">
+  <header class="site-header">
+    <a class="brand" href="/">CATENARTS</a>
+    <details class="menu-dropdown">
+      <summary class="menu-button">Explore</summary>
+      <nav class="dropdown-menu" id="site-menu" data-menu>
+        <a href="/">Home</a>
+        <a href="/map.html">Map</a>
+        <a href="/artist-profile.html">About the Creator</a>
+        <a href="/profiles.html">Profiles</a>
+      </nav>
+    </details>
+  </header>
+
+  <main class="profiles-shell">
+    <section class="profiles-hero">
+      <p class="eyebrow">Profiles Directory</p>
+      <h1>Browse the network by type, then by name.</h1>
+      <p>
+        Search saved profiles, scan them alphabetically, and open any profile page directly from one organized directory.
+      </p>
+    </section>
+
+    <section class="profiles-search-panel">
+      <div class="profiles-search-grid">
+        <label class="profiles-search-field">
+          <span>Search profiles</span>
+          <input id="profilesSearchInput" type="search" placeholder="Search by name, role, location, affiliation, or tags" />
+        </label>
+        <label class="profiles-search-field">
+          <span>Filter by type</span>
+          <select id="profilesTypeFilter">
+            <option value="all">All types</option>
+            <option value="artist">Artist</option>
+            <option value="curator">Curator</option>
+            <option value="institution">Institution</option>
+            <option value="gallery">Gallery</option>
+            <option value="collective">Collective</option>
+            <option value="other">Other</option>
+          </select>
+        </label>
+      </div>
+      <p class="profiles-result-count" id="profilesResultCount">Loading saved profiles...</p>
+    </section>
+
+    <section class="profiles-groups" id="profilesGroups"></section>
+    <section class="profiles-empty-card is-hidden" id="profilesEmptyState">
+      <h2>No matching profiles yet.</h2>
+      <p>Create a profile from the homepage to see it appear here.</p>
+    </section>
+  </main>
+
+  <script src="/profile-store.js?v=profilespage1"></script>
+  <script src="/nav.js?v=profilespage1"></script>
+  <script src="/profiles-page.js?v=profilespage1"></script>
+</body>
+</html>

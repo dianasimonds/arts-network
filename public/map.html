@@ -8,7 +8,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/styles.css?v=profilespage1" />
 </head>
 <body class="site-body map-page">
   <header class="site-header">
@@ -18,16 +18,15 @@
         <span class="page-status-label">Map status</span>
         <span id="status">Loading map...</span>
       </div>
-      <div class="menu-dropdown">
-        <button class="menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-menu">
-          Explore
-        </button>
+      <details class="menu-dropdown">
+        <summary class="menu-button">Explore</summary>
         <nav class="dropdown-menu" id="site-menu" data-menu>
           <a href="/">Home</a>
           <a href="/map.html">Map</a>
-          <a href="/artist-profile.html">Artist Profile</a>
+          <a href="/artist-profile.html">About the Creator</a>
+          <a href="/profiles.html">Profiles</a>
         </nav>
-      </div>
+      </details>
     </div>
   </header>
 
@@ -132,7 +131,8 @@
   </main>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <script src="/nav.js"></script>
+  <script src="/profile-store.js?v=profilespage1"></script>
+  <script src="/nav.js?v=profilespage1"></script>
   <script>
     const mapOverlayCard = document.getElementById("mapOverlayCard");
     const mapOverlayClose = document.getElementById("mapOverlayClose");

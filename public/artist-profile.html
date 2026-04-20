@@ -7,7 +7,7 @@
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="/styles.css" />
+  <link rel="stylesheet" href="/styles.css?v=profilespage1" />
 </head>
 <body class="site-body profile-page">
   <div class="profile-background-layer" aria-hidden="true">
@@ -16,33 +16,46 @@
 
   <header class="site-header">
     <a class="brand" href="/">CATENARTS</a>
-    <div class="menu-dropdown">
-      <button class="menu-button" type="button" data-menu-toggle aria-expanded="false" aria-controls="site-menu">
-        Explore
-      </button>
+    <details class="menu-dropdown">
+      <summary class="menu-button">Explore</summary>
       <nav class="dropdown-menu" id="site-menu" data-menu>
         <a href="/">Home</a>
         <a href="/map.html">Map</a>
-        <a href="/artist-profile.html">Artist Profile</a>
+        <a href="/artist-profile.html">About the Creator</a>
+        <a href="/profiles.html">Profiles</a>
       </nav>
-    </div>
+    </details>
   </header>
 
   <main class="profile-shell">
     <section class="profile-hero">
       <div class="profile-portrait">
         <div class="portrait-frame">
-          <span>Diana Simonds</span>
+          <img
+            class="profile-photo is-hidden"
+            id="profilePhotoPreview"
+            alt="Profile portrait preview"
+          />
+          <span class="portrait-placeholder" id="profilePhotoPlaceholder" data-profile-name>Diana Simonds</span>
+        </div>
+        <div class="profile-upload-panel">
+          <label class="profile-upload-label" for="profilePhotoInput">Profile picture</label>
+          <input
+            class="profile-upload-input"
+            id="profilePhotoInput"
+            type="file"
+            accept="image/*"
+          />
+          <p class="profile-upload-note">Choose an image to preview it on this profile page.</p>
         </div>
       </div>
       <div class="profile-intro">
-        <p class="eyebrow">Sample Profile</p>
-        <h1>Diana Simonds</h1>
-        <p class="profile-role">MA student in Digital Art History and Computational Media at Duke University</p>
-        <p class="profile-summary">
+        <h1 data-profile-name>Diana Simonds</h1>
+        <p class="profile-role" data-profile-role>MA student in Digital Art History and Computational Media at Duke University</p>
+        <p class="profile-summary" data-profile-summary>
           Diana Simonds is a current MA student at Duke University studying Digital Art History and Computational Media. With a professional background in the museum space, she returned to school to explore questions around networking in the arts space and to imagine more connected ways for artists and institutions to find one another.
         </p>
-        <div class="tag-row">
+        <div class="tag-row" data-profile-tags>
           <span>Digital Art History</span>
           <span>Computational Media</span>
           <span>Arts Networking</span>
@@ -53,14 +66,14 @@
     <section class="profile-grid">
       <article class="profile-card">
         <h2>About</h2>
-        <p>
+        <p data-profile-about>
           Diana's work sits at the intersection of art, technology, and cultural infrastructure. Drawing on her museum background and graduate research, she is interested in how digital tools can support discovery, visibility, and stronger relationships across the arts ecosystem.
         </p>
       </article>
 
       <article class="profile-card">
         <h2>Research Focus</h2>
-        <ul class="profile-list">
+        <ul class="profile-list" data-profile-research>
           <li>Digital art history and networked cultural research</li>
           <li>Computational approaches to mapping arts communities</li>
           <li>Designing tools that make the arts space more legible and connected</li>
@@ -69,7 +82,7 @@
 
       <article class="profile-card">
         <h2>Details</h2>
-        <ul class="profile-list">
+        <ul class="profile-list" data-profile-details>
           <li>Location: Durham, NC, USA</li>
           <li>Affiliation: Duke University</li>
           <li>Field: Digital Art History and Computational Media</li>
@@ -79,7 +92,7 @@
 
       <article class="profile-card">
         <h2>Project Statement</h2>
-        <p>
+        <p data-profile-statement>
           "This project began as a way to look for answers to questions about networking in the arts space. CATENARTS serves as one potential response: a platform for making relationships, proximity, and artistic communities more visible."
         </p>
       </article>
@@ -120,8 +133,11 @@
     </aside>
   </main>
 
+  <script src="/profile-store.js?v=profilespage1"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/p5.js/1.9.4/p5.min.js"></script>
-  <script src="/artist-profile-background.js"></script>
-  <script src="/nav.js"></script>
+  <script src="/artist-profile-background.js?v=profilespage1"></script>
+  <script src="/artist-profile-data.js?v=profilespage1"></script>
+  <script src="/artist-profile-photo.js?v=profilespage1"></script>
+  <script src="/nav.js?v=profilespage1"></script>
 </body>
 </html>

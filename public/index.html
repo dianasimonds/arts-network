@@ -1,579 +1,168 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width,initial-scale=1" />
-  <title>CATENARTS</title>
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="/styles.css" />
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
-    body {
-      font-family: 'Playfair Display', serif;
-      background: #f5f5f5;
-    }
-
-    header {
-      background: #2c3e50;
-      color: white;
-      padding: 20px;
-      text-align: center;
-      box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
-
-    header h1 {
-      margin-bottom: 5px;
-    }
-
-    #status {
-      font-size: 12px;
-      opacity: 0.8;
-    }
-
-    main {
-      display: flex;
-      height: calc(100vh - 80px);
-    }
-
-    #map {
-      flex: 1;
-      background: #e5e5e5;
-    }
-    .form-panel {
-      width: 320px;
-    }
-    .leaflet-popup-content-wrapper {
-      border-radius: 8px;
-      box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-    }
-    .leaflet-popup-content {
-      font-size: 13px;
-      line-height: 1.3;
-    }
-    .leaflet-container .marker-cluster-small {
-      background-color: rgba(76,175,80,0.6);
-    }
-
-    .form-panel {
-      width: 350px;
-      background: white;
-      overflow-y: auto;
-      border-right: 1px solid #ddd;
-      padding: 20px;
-    }
-
-    .form-panel h2 {
-      font-size: 18px;
-      margin-bottom: 15px;
-      color: #333;
-    }
-
-    .form-group {
-      margin-bottom: 15px;
-    }
-
-    label {
-      display: block;
-      font-size: 13px;
-      font-weight: 500;
-      margin-bottom: 5px;
-      color: #555;
-    }
-
-    input,
-    textarea,
-    select {
-      width: 100%;
-      padding: 8px;
-      border: 1px solid #ddd;
-      border-radius: 4px;
-      font-size: 13px;
-      font-family: inherit;
-    }
-
-    textarea {
-      resize: vertical;
-      min-height: 60px;
-    }
-
-    input:focus,
-    textarea:focus,
-    select:focus {
-      outline: none;
-      border-color: #4a90e2;
-      box-shadow: 0 0 4px rgba(74, 144, 226, 0.2);
-    }
-
-    button {
-      width: 100%;
-      padding: 10px;
-      background: #4a90e2;
-      color: white;
-      border: none;
-      border-radius: 4px;
-      font-size: 14px;
-      font-weight: 500;
-      cursor: pointer;
-      margin-top: 10px;
-    }
-
-    button:hover {
-      background: #357abd;
-    }
-
-    button:disabled {
-      background: #ccc;
-      cursor: not-allowed;
-    }
-
-    .error {
-      color: #e74c3c;
-      font-size: 12px;
-      margin-top: 5px;
-    }
-
-    .success {
-      color: #27ae60;
-      font-size: 12px;
-      margin-top: 5px;
-    }
-
-    .popup-content {
-      font-size: 13px;
-      min-width: 200px;
-    }
-
-    .popup-content strong {
-      display: block;
-      margin-top: 8px;
-      font-size: 12px;
-      color: #666;
-    }
-
-    .popup-content a {
-      color: #4a90e2;
-      text-decoration: none;
-    }
-
-    .popup-content a:hover {
-      text-decoration: underline;
-    }
-
-    .custom-div-icon {
-      background: transparent;
-      border: none;
-    }
-
-    @media (max-width: 768px) {
-      main {
-        flex-direction: column;
-      }
-
-      .form-panel {
-        width: 100%;
-        height: 40vh;
-        border-right: none;
-        border-bottom: 1px solid #ddd;
-      }
-
-      #map {
-        height: 60vh;
-      }
-    }
-  </style>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CATENARTS | Home</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Cormorant+Garamond:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/styles.css?v=profilespage1" />
 </head>
-<body>
-  <header>
-    <h1>CATENARTS</h1>
-    <div id="status">Loading map...</div>
-    <div id="warning" style="color:#e74c3c;font-size:12px;">
-      <!-- protocol warning inserted by script -->
-    </div>
+<body class="site-body">
+  <header class="site-header">
+    <a class="brand" href="/">CATENARTS</a>
+    <details class="menu-dropdown">
+      <summary class="menu-button">Explore</summary>
+      <nav class="dropdown-menu" id="site-menu" data-menu>
+        <a href="/">Home</a>
+        <a href="/map.html">Map</a>
+        <a href="/artist-profile.html">About the Creator</a>
+        <a href="/profiles.html">Profiles</a>
+      </nav>
+    </details>
   </header>
 
   <main>
-    <div class="form-panel">
-      <h2>Submit Your Profile</h2>
-      <form id="submitForm">
-        <div class="form-group">
-          <label for="adminToken">Admin token (for deleting points)</label>
-          <input type="password" id="adminToken" name="adminToken" placeholder="optional" />
+    <section class="hero-section">
+      <div class="hero-copy">
+        <p class="eyebrow">Arts Network Map</p>
+        <h1>Trace creative communities, discover artists, and make new connections.</h1>
+        <p class="hero-text">
+          CATENARTS is a digital meeting point for artists, curators, galleries, collectives, and institutions. Start here, then explore the live map or open a sample artist page to imagine how profiles can feel inside the network.
+        </p>
+        <div class="hero-actions">
+          <a class="primary-link" href="/map.html">Open the Map</a>
+          <a class="secondary-link" href="/artist-profile.html">About the Creator</a>
+          <button class="secondary-link profile-template-trigger" type="button" data-profile-template-open>
+            Create Your Profile
+          </button>
         </div>
-        <div class="form-group">
-          <label for="type">Type *</label>
-          <select id="type" name="type" required>
-            <option value="">Select...</option>
-            <option value="artist">Artist</option>
-            <option value="curator">Curator</option>
-            <option value="institution">Institution</option>
-            <option value="gallery">Gallery</option>
-            <option value="collective">Collective</option>
-            <option value="other">Other</option>
-          </select>
+      </div>
+      <div class="hero-panel">
+        <div class="stat-card">
+          <span class="stat-label">What it does</span>
+          <strong>Maps local and global arts ecosystems</strong>
+          <p>Show where creative practitioners are located and make it easier to discover overlapping communities.</p>
         </div>
-
-        <div class="form-group">
-          <label for="name">Name *</label>
-          <input type="text" id="name" name="name" required />
+        <div class="stat-card">
+          <span class="stat-label">Who it serves</span>
+          <strong>Artists, curators, institutions, galleries</strong>
+          <p>Each entry can become part of a visible, searchable cultural network rather than staying siloed.</p>
         </div>
+      </div>
+    </section>
 
-        <div class="form-group">
-          <label for="city">City *</label>
-          <input type="text" id="city" name="city" required />
+    <section class="home-showcase">
+      <div class="showcase-copy">
+        <p class="eyebrow">Next Step</p>
+        <h2>Become a part of the network today.</h2>
+        <p>
+          Make a profile to join the network and connect with arts professionals around the world.
+        </p>
+      </div>
+      <div class="showcase-links">
+        <a class="showcase-tile" href="/map.html">
+          <span>Map Page</span>
+          <strong>Browse entries and submit a profile</strong>
+        </a>
+        <a class="showcase-tile" href="/artist-profile.html">
+          <span>About the Creator</span>
+          <strong>Learn more about the creator behind CATENARTS</strong>
+        </a>
+        <div class="showcase-tile">
+          <span>Project Mission</span>
+          <strong>This website was created by Diana Simonds at Duke University in an effort to increase accessibility, equity, and visibility in the arts.</strong>
         </div>
-
-        <div class="form-group">
-          <label for="address">Address</label>
-          <input type="text" id="address" name="address" placeholder="e.g. 123 Main St" />
-        </div>
-
-        <div class="form-group">
-          <label for="country">Country *</label>
-          <input type="text" id="country" name="country" required />
-        </div>
-
-        <div class="form-group">
-          <label for="email">Email *</label>
-          <input type="email" id="email" name="email" required placeholder="you@example.com" />
-        </div>
-
-        <div class="form-group">
-          <label for="lat">Latitude *</label>
-          <input type="number" id="lat" name="lat" step="0.0001" autocomplete="off" readonly required />
-        </div>
-
-        <div class="form-group">
-          <label for="lng">Longitude *</label>
-          <input type="number" id="lng" name="lng" step="0.0001" autocomplete="off" readonly required />
-        </div>
-
-        <div class="form-group">
-          <label for="medium">Medium</label>
-          <input type="text" id="medium" name="medium" placeholder="e.g. Painting, Sculpture, Digital" />
-        </div>
-
-        <div class="form-group">
-          <label for="website">Website</label>
-          <input type="url" id="website" name="website" placeholder="https://example.com" />
-        </div>
-
-        <div class="form-group">
-          <label for="affiliation">Affiliation</label>
-          <input type="text" id="affiliation" name="affiliation" placeholder="e.g. Gallery name, Organization" />
-        </div>
-
-        <div class="form-group">
-          <label for="biography">Biography</label>
-          <textarea id="biography" name="biography" placeholder="Brief bio..."></textarea>
-        </div>
-
-        <button type="submit">Add to Map</button>
-        <div id="formMessage"></div>
-      </form>
-    </div>
-
-    <div id="map"></div>
+      </div>
+    </section>
   </main>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
-  <script>
-    // warn if page is served via HTTPS but server is HTTP
-    if (location.protocol === 'https:') {
-      const warnEl = document.getElementById('warning');
-      if (warnEl) {
-        warnEl.textContent = '⚠ The page is loaded via HTTPS but the backend is HTTP. Use http://localhost:3000 or configure HTTPS for the server.';
-      }
-    }
-    // ensure leaflet loaded
-    if (typeof L === "undefined") {
-      console.error("Leaflet failed to load");
-      document.getElementById("status").textContent = "Map library failed to load";
-    } else {
-      // Initialize map
-      const map = L.map("map", { zoomControl: false }).setView([20, 0], 2);
-      // color scheme for different types
-      const typeColors = {
-        artist: '#e74c3c',
-        curator: '#f39c12',
-        institution: '#9b59b6',
-        gallery: '#3498db',
-        collective: '#1abc9c',
-        other: '#7f8c8d'
-      };
-      // emoji character for each type; will appear inside colored circle
-      const typeIcons = {
-        artist: '🎨',
-        curator: '👩‍💼',
-        institution: '🏛️',
-        gallery: '🖼️',
-        collective: '👥',
-        other: '📍'
-      };
-      // use a light, modern base tile (CartoDB Positron)
-      L.tileLayer("https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png", {
-        attribution: "© OpenStreetMap contributors © CARTO",
-        maxZoom: 19
-      }).addTo(map);
-      // move zoom control to top-right where it interferes less with sidebar
-      L.control.zoom({ position: 'topright' }).addTo(map);
+  <div class="profile-template-modal" data-profile-template-modal hidden>
+    <div class="profile-template-backdrop" data-profile-template-close></div>
+    <section class="profile-template-dialog" role="dialog" aria-modal="true" aria-labelledby="profile-template-title">
+      <button class="profile-template-close" type="button" aria-label="Close profile template" data-profile-template-close>×</button>
+      <div class="profile-template-header">
+        <p class="eyebrow">Create Your Profile</p>
+        <h2 id="profile-template-title">Start with a blank profile template.</h2>
+        <p>
+          This editable draft mirrors the structure of the sample profile page, but starts empty so you can sketch your own version.
+        </p>
+      </div>
 
-      // add legend showing color for each type
-      const legend = L.control({ position: 'bottomright' });
-      legend.onAdd = function(map) {
-        const div = L.DomUtil.create('div', 'info legend');
-        let labels = [];
-        for (const type of Object.keys(typeColors)) {
-          const color = typeColors[type];
-          const icon = typeIcons[type] || typeIcons.other;
-          labels.push(`${icon}&nbsp;${type.charAt(0).toUpperCase()+type.slice(1)}`);
-        }
-        div.innerHTML = labels.join('<br>');
-        div.style.background = 'rgba(255,255,255,0.8)';
-        div.style.padding = '6px 8px';
-        div.style.fontSize = '12px';
-        div.style.borderRadius = '4px';
-        return div;
-      };
-      legend.addTo(map);
+      <form class="profile-template-form">
+        <div class="profile-template-grid">
+          <label class="profile-template-field">
+            <span>Name</span>
+            <input type="text" name="name" placeholder="Your name" />
+          </label>
+          <label class="profile-template-field">
+            <span>Profile Type</span>
+            <select name="type">
+              <option value="artist">Artist</option>
+              <option value="curator">Curator</option>
+              <option value="institution">Institution</option>
+              <option value="gallery">Gallery</option>
+              <option value="collective">Collective</option>
+              <option value="other">Other</option>
+            </select>
+          </label>
+          <label class="profile-template-field">
+            <span>Role / Title</span>
+            <input type="text" name="role" placeholder="Artist, curator, student, gallery director..." />
+          </label>
+          <label class="profile-template-field">
+            <span>Location</span>
+            <input type="text" name="location" placeholder="City, Region, Country" />
+          </label>
+          <label class="profile-template-field">
+            <span>Affiliation</span>
+            <input type="text" name="affiliation" placeholder="University, studio, institution, collective..." />
+          </label>
+          <label class="profile-template-field profile-template-field-wide">
+            <span>Short Summary</span>
+            <textarea name="summary" placeholder="Introduce your practice, research, or professional background."></textarea>
+          </label>
+          <label class="profile-template-field">
+            <span>Tag 1</span>
+            <input type="text" name="tag1" placeholder="Primary field" />
+          </label>
+          <label class="profile-template-field">
+            <span>Tag 2</span>
+            <input type="text" name="tag2" placeholder="Medium or focus" />
+          </label>
+          <label class="profile-template-field">
+            <span>Tag 3</span>
+            <input type="text" name="tag3" placeholder="Community or theme" />
+          </label>
+          <label class="profile-template-field profile-template-field-wide">
+            <span>About</span>
+            <textarea name="about" placeholder="Describe your work, research, or arts-sector perspective."></textarea>
+          </label>
+          <label class="profile-template-field profile-template-field-wide">
+            <span>Research Focus / Recent Work</span>
+            <textarea name="research" placeholder="List current projects, exhibitions, themes, or areas of study."></textarea>
+          </label>
+          <label class="profile-template-field profile-template-field-wide">
+            <span>Details</span>
+            <textarea name="details" placeholder="Location, website, institution, discipline, and other key profile details."></textarea>
+          </label>
+          <label class="profile-template-field profile-template-field-wide">
+            <span>Statement</span>
+            <textarea name="statement" placeholder="Add a short statement about your work or your reason for joining the network."></textarea>
+          </label>
+        </div>
 
-      // Markers layer
-      let markersLayer = L.featureGroup().addTo(map);
-      let markers = {};
+        <div class="profile-template-actions">
+          <button class="primary-button" type="submit">Use This As My Draft</button>
+          <button class="secondary-link" type="button" data-profile-template-close>Close</button>
+        </div>
+      </form>
+    </section>
+  </div>
 
-      // Fetch and display all points
-      async function loadPoints() {
-      try {
-        const res = await fetch("/api/points");
-        const data = await res.json();
-
-        // Clear existing markers
-        markersLayer.clearLayers();
-        markers = {};
-
-        data.features.forEach((feature) => {
-          addMarker(feature);
-        });
-
-        document.getElementById("status").textContent = `${data.features.length} entries on map`;
-      } catch (err) {
-        console.error("Error loading points:", err);
-        document.getElementById("status").textContent = "Error loading map";
-      }
-    }
-
-    // Add a single marker to the map
-    function addMarker(feature) {
-      const coords = feature.geometry.coordinates;
-      const props = feature.properties;
-      const id = props.id;
-
-      const fill = typeColors[props.type] || '#7f8c8d';
-      const iconChar = typeIcons[props.type] || typeIcons.other;
-      // wrap symbol inside a colored circle
-      const html = `<div style="background:${fill};width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;">${iconChar}</div>`;
-      const marker = L.marker([coords[1], coords[0]], {
-        icon: L.divIcon({
-          className: 'custom-div-icon',
-          html,
-          iconSize: [28,28],
-          iconAnchor: [14,14]
-        })
-      }).addTo(markersLayer);
-
-      // Create popup content
-      let popupHtml = `<div class="popup-content">
-        <strong>${props.name}</strong>
-        <div>${props.city}, ${props.country}</div>`;
-
-      if (props.medium) {
-        popupHtml += `<strong>Medium:</strong> ${props.medium}<br/>`;
-      }
-      if (props.affiliation) {
-        popupHtml += `<strong>Affiliation:</strong> ${props.affiliation}<br/>`;
-      }
-      if (props.biography) {
-        popupHtml += `<strong>Bio:</strong> ${props.biography.substring(0, 100)}...<br/>`;
-      }
-      if (props.website) {
-        popupHtml += `<strong>Website:</strong> <a href="${props.website}" target="_blank">${props.website}</a><br/>`;
-      }
-      // delete button (requires admin token)
-      popupHtml += `<button data-id="${id}" class="delete-btn" style="margin-top:8px;color:#e74c3c;">Delete</button>`;
-      popupHtml += `</div>`;
-
-      marker.bindPopup(popupHtml);
-      markers[id] = marker;
-    }
-
-    // Geocode city+address+country to lat/lng
-    async function geocodeLocation() {
-      const city = document.getElementById("city").value.trim();
-      const address = document.getElementById("address").value.trim();
-      const country = document.getElementById("country").value.trim();
-      if (!city || !country) return;
-      
-      try {
-        const query = address ? `${address}, ${city}, ${country}` : `${city}, ${country}`;
-        const res = await fetch(
-          `https://nominatim.openstreetmap.org/search?format=json&q=${encodeURIComponent(query)}&limit=1`
-        );
-        const results = await res.json();
-        if (results.length > 0) {
-          const latEl = document.getElementById("lat");
-          const lngEl = document.getElementById("lng");
-          latEl.value = parseFloat(results[0].lat).toFixed(4);
-          lngEl.value = parseFloat(results[0].lon).toFixed(4);
-        }
-      } catch (err) {
-        console.warn("Geocoding failed:", err);
-      }
-    }
-    
-    // clear coordinates when user edits location fields
-    function clearCoords() {
-      document.getElementById('lat').value = '';
-      document.getElementById('lng').value = '';
-    }
-
-    let geocodeTimer;
-    function scheduleGeocode() {
-      clearCoords();
-      clearTimeout(geocodeTimer);
-      geocodeTimer = setTimeout(geocodeLocation, 500);
-    }
-
-    document.getElementById("city").addEventListener("input", scheduleGeocode);
-    document.getElementById("address").addEventListener("input", scheduleGeocode);
-    document.getElementById("country").addEventListener("input", scheduleGeocode);
-
-    // clear the entire form on load; some browsers still auto-fill fields otherwise
-    window.addEventListener('load', () => {
-      const form = document.getElementById('submitForm');
-      if (form) form.reset();
-      // additional wipe after a tick to beat autofill
-      setTimeout(() => {
-        ['city','address','country','lat','lng'].forEach(id => {
-          const el = document.getElementById(id);
-          if (el) el.value = '';
-        });
-      }, 0);
-    });
-
-    // Form submission
-    document.getElementById("submitForm").addEventListener("submit", async (e) => {
-      e.preventDefault();
-      const latVal = document.getElementById("lat").value;
-      const lngVal = document.getElementById("lng").value;
-      if (!latVal || !lngVal) {
-        document.getElementById('formMessage').textContent = 'Please enter a valid location (coordinates) before submitting.';
-        document.getElementById('formMessage').className = 'error';
-        return;
-      }
-      const formData = {
-        type: document.getElementById("type").value,
-        name: document.getElementById("name").value,
-        city: document.getElementById("city").value,
-        address: document.getElementById("address").value,
-        country: document.getElementById("country").value,
-        email: document.getElementById("email").value,
-        lat: parseFloat(latVal),
-        lng: parseFloat(lngVal),
-        medium: document.getElementById("medium").value,
-        website: document.getElementById("website").value,
-        affiliation: document.getElementById("affiliation").value,
-        biography: document.getElementById("biography").value,
-        consentPublic: true
-      };
-
-      try {
-        const res = await fetch("/api/submit", {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData)
-        });
-
-        // read text first so we can diagnose invalid JSON too
-        const text = await res.text();
-        let result;
-        try {
-          result = text ? JSON.parse(text) : {};
-        } catch (parseErr) {
-          throw new Error(`Invalid JSON from server: ${text}`);
-        }
-
-        if (res.ok) {
-          document.getElementById("formMessage").innerHTML = '<div class="success">✓ Added to map!</div>';
-          document.getElementById("submitForm").reset();
-          loadPoints(); // Reload all points
-          setTimeout(() => {
-            document.getElementById("formMessage").innerHTML = "";
-          }, 3000);
-        } else {
-          document.getElementById("formMessage").innerHTML = `<div class="error">✗ ${result.error || result.message || 'Unknown error'}</div>`;
-        }
-      } catch (err) {
-        console.error("submission failed", err);
-        let msg = err.message || 'Network error';
-        if (location.protocol === 'https:') {
-          msg += ' (check that the server is running with HTTPS or use HTTP)';
-        }
-        document.getElementById("formMessage").innerHTML = `<div class="error">✗ ${msg}</div>`;
-      }
-    });
-
-    // Get user's current location for map centering
-    if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (pos) => {
-          const { latitude, longitude } = pos.coords;
-          document.getElementById("lat").value = latitude.toFixed(4);
-          document.getElementById("lng").value = longitude.toFixed(4);
-          map.setView([latitude, longitude], 10);
-        },
-        () => {
-          loadPoints(); // Just load points if geolocation fails
-        }
-      );
-    } else {
-      loadPoints();
-    }
-
-    // handle deletion from popup
-    document.body.addEventListener('click', async (e) => {
-      if (e.target.matches('.delete-btn')) {
-        const id = e.target.getAttribute('data-id');
-        const token = document.getElementById('adminToken').value;
-        if (!confirm('Are you sure you want to delete this entry?')) return;
-        try {
-          const res = await fetch(`/api/submit/${id}` + (token ? `?token=${encodeURIComponent(token)}` : ''), {
-            method: 'DELETE'
-          });
-          if (res.ok) {
-            loadPoints();
-          } else {
-            const text = await res.text();
-            alert('Failed to delete: ' + text);
-          }
-        } catch (err) {
-          alert('Delete request failed: ' + err.message);
-        }
-      }
-    });
-
-    // Load points on page load
-    loadPoints();
-
-    // Poll for new submissions every 5 seconds
-    setInterval(loadPoints, 5000);
-    }
-  </script>
+  <script src="/profile-store.js?v=profilespage1"></script>
+  <script src="/nav.js?v=profilespage1"></script>
+  <script src="/home-profile-template.js?v=profilespage1"></script>
 </body>
 </html>
