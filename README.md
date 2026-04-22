@@ -1,170 +1,233 @@
-# Arts Network Map
+# CATENARTS
 
-A small Express + MongoDB app that collects arts community submissions and displays them on an interactive Leaflet map.
+CATENARTS is a small web project about visibility, connection, and discoverability in the arts. It started as a straightforward submission map built with Express, MongoDB, and Leaflet. It has since grown into a fuller prototype with a homepage, a creator page, a live map, and a separate profiles directory.
 
-# Arts Network Map
+The project is still very much a working prototype. Some parts are backed by MongoDB, and some parts are intentionally lightweight frontend experiments so ideas can be tested quickly.
 
-## Tagline
+## What the project is now
 
-An interactive, community-driven map to discover arts practitioners and organizations globally.
+Right now the site has four main public-facing areas:
 
-## Project Description
+- `Home` (`/`)
+  A landing page that frames the project, introduces the network idea, and gives visitors a way to start building a profile.
 
-Arts Network Map is an Express + MongoDB application that collects submissions from artists, curators, galleries, and collectives and displays approved entries as interactive points on a Leaflet map. Submissions include location and profile details; a separate admin interface allows moderation and deletion.
+- `Map` (`/map.html`)
+  A live Leaflet map connected to approved submissions from MongoDB. Visitors can browse entries, submit new ones, and see points appear on the map.
 
-## Features
-- Public interactive Leaflet map with popups and website links
-- Submission form capturing name, email (stored, not public), location, medium, website, affiliation, and biography
-- Admin UI (`/admin`) for listing and deleting submissions
-- REST API endpoints: `POST /api/submit`, `GET /api/points`, `DELETE /api/submit/:id`
+- `About the Creator` (`/artist-profile.html`)
+  A creator page centered on Diana Simonds. This page also doubles as the template for what a more developed profile page could look like.
 
-## Target Audience
+- `Profiles` (`/profiles.html`)
+  A searchable directory of profiles saved locally in the browser. These are grouped by type and sorted alphabetically.
 
-- Artists, curators, galleries, and collectives seeking visibility
-- Event organizers and researchers exploring arts activity geographically
-- Community builders and local arts networks
+There is also an admin page:
 
+- `Admin` (`/admin.html` or `/admin`)
+  A simple moderation view for listing submissions and deleting them with the admin token.
 
-- Community mapping projects
-- Arts directories and discovery tools
+## What the first version looked like
 
-- Submitters provide name, email, city, country, latitude, longitude, medium, website, affiliation, and biography.
+The first version of this project was much simpler.
 
-This project was created to provide a low-friction way for arts practitioners to list themselves on a shared, discoverable map. It aims to:
-- Lower barriers for listing arts activity with a minimal submission form
-- Provide a spatial overview to help discovery and local collaboration
-- Offer lightweight moderation capabilities via an admin interface
+It was essentially:
 
-Research questions explored:
-- How can location-aware listings improve community discovery and collaboration?
-- What minimal metadata supports useful discovery without overburdening contributors?
+- one Express server
+- one MongoDB-backed submission flow
+- one interactive Leaflet map
+- one admin interface for reviewing and deleting entries
 
-- Public interactive map showing approved points with popups and links to websites.
+The original focus was the map itself: getting arts professionals, institutions, and organizations onto a shared spatial directory with as little friction as possible.
 
-- Admin UI (`/admin`) for listing and deleting submissions (protected by optional `ADMIN_TOKEN`).
-- Affordances: labeled form fields, clear submit button, map interactivity (click markers to open popups), and an obvious admin interface for moderation.
-- Anti-affordances: submitter emails are intentionally not displayed on the public map to protect privacy; delete functionality is gated.
+That early version answered a practical question:
 
-- Simple API endpoints: `POST /api/submit`, `GET /api/points`, `DELETE /api/submit/:id`.
-- Required fields (`*`) signal necessary inputs.
-- Admin token input and red delete buttons indicate restricted administrative actions.
+How can people in the arts find one another more easily across geography, discipline, and institutional boundaries?
 
+The newer pages were added later to give the project more context and to test what a fuller ecosystem might feel like beyond map pins alone.
 
-- Marker color/size and clustered layout (future) support scanning; popups provide structured details and direct website links.
+## Current architecture
 
-## Quick start (development)
-- Visual feedback: submission success/error messages, popup confirmations, and status text showing entry count.
-- Feedback loops: the client polls for new submissions so contributors see updates shortly after posting.
+### Backend
 
+The backend is a small Express app in [server.js](./server.js).
 
+It currently does a few key things:
 
-1. Clone the repo (if you haven't already):
-- Node.js (v14+ recommended)
-- npm
-- MongoDB (local or hosted)
+- serves the static files in `public/`
+- connects to MongoDB
+- accepts submissions
+- returns approved points as GeoJSON
+- exposes a small admin endpoint for reviewing approved entries
+- supports deleting entries when the admin token is provided
 
+### Frontend
 
+Most of the interface lives in `public/`.
 
-```bash
-git clone git@github.com:dianasimonds/arts-network.git
-cd arts-network
-npm install
-```
+Important files:
 
-Create a `.env` file (optional):
+- [public/index.html](./public/index.html)
+- [public/map.html](./public/map.html)
+- [public/artist-profile.html](./public/artist-profile.html)
+- [public/profiles.html](./public/profiles.html)
+- [public/styles.css](./public/styles.css)
+- [public/nav.js](./public/nav.js)
 
-```bash
+There are also a few small page-specific scripts:
+
+- [public/home-profile-template.js](./public/home-profile-template.js)
+  Handles the homepage modal for creating a new profile draft.
+
+- [public/profile-store.js](./public/profile-store.js)
+  Stores browser-local profile drafts in `localStorage`.
+
+- [public/profiles-page.js](./public/profiles-page.js)
+  Powers the searchable profiles directory.
+
+- [public/artist-profile-data.js](./public/artist-profile-data.js)
+  Reads a saved local profile and injects it into the creator/profile page when a `?profile=` slug is present.
+
+- [public/artist-profile-background.js](./public/artist-profile-background.js)
+  Runs the animated background on the creator/profile page.
+
+- [public/artist-profile-photo.js](./public/artist-profile-photo.js)
+  Provides a local image upload preview on the creator/profile page.
+
+## What is database-backed vs browser-local
+
+This is important, because the project currently uses two different storage ideas.
+
+### MongoDB-backed
+
+The map submissions are real backend records.
+
+These flow through:
+
+- `POST /api/submit`
+- `GET /api/points`
+- `GET /api/admin/points`
+- `DELETE /api/submit/:id`
+
+Map entries are stored in MongoDB and can be shared across sessions and devices.
+
+### Browser-local for now
+
+The profile drafts created from the homepage modal are currently stored in `localStorage`.
+
+That means:
+
+- they are only available in the browser where they were created
+- they do not yet live in MongoDB
+- they are meant as a prototype for profile structure and browsing, not yet as a production profile system
+
+This is one of the main unfinished seams in the project at the moment.
+
+## Routes and pages
+
+### Public pages
+
+- `/` -> homepage
+- `/map.html` or `/map` -> map page
+- `/artist-profile.html` or `/artist-profile` -> About the Creator page
+- `/profiles.html` -> profiles directory
+
+### Admin page
+
+- `/admin.html` or `/admin` -> admin interface
+
+### API routes
+
+- `POST /api/submit`
+- `GET /api/points`
+- `GET /api/admin/points`
+- `DELETE /api/submit/:id`
+
+## Environment variables
+
+Create a `.env` file at the project root if you want to run the app locally with your own settings.
+
+Example:
+
+```env
 MONGODB_URI=mongodb://127.0.0.1:27017/arts-network-map
-# ADMIN_TOKEN defaults to 'admintoken' if not set
 ADMIN_TOKEN=admintoken
 PORT=3000
 ```
 
-Start the app in development:
+Notes:
+
+- If `MONGODB_URI` is missing, the app falls back to `mongodb://127.0.0.1:27017/arts-network-map`
+- If `ADMIN_TOKEN` is missing, it falls back to `admintoken`
+- The app defaults to port `3000`
+
+## Running the project locally
+
+Install dependencies:
+
+```bash
+npm install
+```
+
+Run the server:
+
+```bash
+npm start
+```
+
+Or, if you want autoreload during development:
 
 ```bash
 npm run dev
 ```
 
-Open `http://localhost:3000` for the public map and `http://localhost:3000/admin` for administration.
+Then open:
 
-```bash
+- `http://localhost:3000`
 
-git clone git@github.com:dianasimonds/arts-network.git
+If the server starts but your browser still says it cannot connect, that is usually a local environment issue rather than an application issue. During development, plain `http://` is the safest option.
 
-cd arts-network
-- Fill the submission form with required fields (including email) and optional profile details, then click **Add to Map**.
-- Approved entries appear on the map and show popups with details and website links.
+## Current strengths
 
-```
-- Visit `/admin` to view entries.
-- Provide `ADMIN_TOKEN` (default `admintoken` if not configured) to authorize deletions; use the Delete button to remove entries.
+At this point, the project does a few things well:
 
+- it has a clear landing page instead of dropping visitors straight into the map
+- the map feels more polished and editorial than the original bare utility version
+- the creator page gives the project a human center
+- the profiles directory creates a stronger sense of networked participation
+- the profile creation flow is easy to test without needing a fully built backend profile system
 
+## Current limitations
 
-2. Install dependencies:
+There are still some rough edges, and it is worth being honest about them.
 
-This project is released under the MIT License. See [LICENSE](LICENSE) for details.
+- Profile creation is not yet tied to MongoDB
+- Uploaded profile pictures are preview-only and are not persisted
+- The admin page is functional but visually older than the rest of the site
+- The creator page is still serving as both a real page and a template stand-in
+- The profiles system and the map submission system are not yet fully unified
 
+In other words, the project currently has two parallel ideas:
 
+1. a live map backed by MongoDB
+2. a profile system prototype backed by browser storage
 
-- Built with Node.js, Express, MongoDB, Mongoose, and Leaflet.
-- Inspired by community mapping and open data efforts.
+That split is okay for now, but it is probably the next major structural thing to resolve.
 
-```bash
+## Good next steps
 
-Planned features:
-- Moderation workflow (pending → approved)
-- Admin authentication and role management
-- Spam protection (reCAPTCHA) and rate-limiting
-- Marker clustering and filtering
+If this project keeps developing, the most logical next moves would be:
 
-Future improvements:
-- Production deployment with HTTPS and CI/CD
-- Accessibility and localization enhancements
+- move profile creation from `localStorage` into MongoDB
+- connect created profiles directly to map entries
+- let profile pages load from real stored data instead of only from the creator page template
+- unify the visual style of the admin page with the rest of the site
+- decide whether CATENARTS is primarily a map-first project, a profile directory, or a hybrid of both
 
+## Why this README is written this way
 
-If you'd like screenshots, diagrams, or expanded HCD analysis, tell me where to add them and I'll update the README.
-```
+This project has changed shape while it was being built, so a README that only described the original map app would be incomplete, and a README that pretended everything is already fully unified would be misleading.
 
-3. Create a `.env` file at the project root (optional):
+The most accurate description right now is:
 
-```
-# .env
-MONGODB_URI=mongodb://127.0.0.1:27017/arts-network-map
-ADMIN_TOKEN=your_admin_token_here
-PORT=3000
-```
+CATENARTS began as a map-based directory for arts professionals and has evolved into a broader prototype for how profiles, geography, and discoverability might work together.
 
-- If `MONGODB_URI` is not provided the app will attempt to connect to a local MongoDB instance.
-- If `ADMIN_TOKEN` is set, delete requests require that token (sent as `?token=...` or `X-Admin-Token` header).
-
-4. Run the app:
-
-```bash
-npm run dev
-```
-
-Open `http://localhost:3000` to view the map, or `http://localhost:3000/admin` to manage submissions.
-
-Important: run the site in `http://` (plain HTTP) while developing. If you load the page via `https://` your browser may block requests to the HTTP backend.
-
-## API
-
-- `POST /api/submit` — accepts JSON body with required fields: `type`, `name`, `email`, `city`, `country`, `lat`, `lng`. Optional: `website`, `medium`, `affiliation`, `biography`, `disciplines`, `tags`, `description`.
-- `GET /api/points` — returns GeoJSON FeatureCollection of approved points for the map.
-- `DELETE /api/submit/:id` — deletes a submission by id. If `ADMIN_TOKEN` is set on the server, include `?token=...` or `X-Admin-Token` header.
-
-## Notes & next steps
-
-- The public API does not expose submitter emails — email is stored but only displayed in the admin UI.
-- For production: set a proper `MONGODB_URI`, enable HTTPS (or proxy behind an HTTPS-enabled server), add a `.env` for secrets, and add a proper Content Security Policy or bundle external assets locally.
-- Recommended enhancements: spam protection (reCAPTCHA), admin authentication, moderation queue (default `status:pending`), and server-side input sanitization.
-
-## .gitignore suggestion
-
-Make sure `node_modules/`, `.env`, and any sensitive files are excluded in `.gitignore`.
-
----
-
-If you'd like, I can also add a `.gitignore` and commit it now. Do you want me to add that and finish the README TODO?
+That feels truer to the project than pretending it is either finished or still only version one.
