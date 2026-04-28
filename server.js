@@ -8,6 +8,7 @@ const path = require("path");
 
 const app = express();
 const Submission = require("./models/Submission");
+let mongoReady = false;
 
 app.use(cors());
 // helmet provides various security headers. disable default CSP so we can load
@@ -30,8 +31,10 @@ const startMongo = async () => {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000 // fail faster
     });
+    mongoReady = true;
     console.log("✅ MongoDB connected");
   } catch (err) {
+    mongoReady = false;
     console.error("❌ MongoDB connection error:", err.message || err);
     console.error("Continuing without DB connection — requests that need the DB may fail.");
   }
@@ -42,6 +45,14 @@ startMongo();
 // convenience redirect for admin UI
 app.get('/admin', (req, res) => {
   res.redirect('/admin.html');
+});
+
+app.get('/map', (req, res) => {
+  res.redirect('/map.html');
+});
+
+app.get('/artist-profile', (req, res) => {
+  res.redirect('/artist-profile.html');
 });
 
 // Create a submission
@@ -110,6 +121,14 @@ app.delete("/api/submit/:id", async (req, res) => {
 });
 
 app.get("/api/points", async (req, res) => {
+  if (!mongoReady) {
+    return res.status(200).json({
+      type: "FeatureCollection",
+      features: [],
+      warning: "Database connection is not available right now."
+    });
+  }
+
   try {
     const docs = await Submission.find({ status: "approved" })
       .sort({ createdAt: -1 })
@@ -151,6 +170,10 @@ app.get("/api/admin/points", async (req, res) => {
   const secret = process.env.ADMIN_TOKEN || 'admintoken';
   if (secret && provided !== secret) {
     return res.status(403).json({ error: "Forbidden" });
+  }
+
+  if (!mongoReady) {
+    return res.status(503).json({ error: "Database connection is not available right now." });
   }
 
   try {

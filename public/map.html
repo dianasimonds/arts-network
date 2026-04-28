@@ -193,18 +193,33 @@
       async function loadPoints() {
         try {
           const res = await fetch(window.location.origin + "/api/points");
-          const data = await res.json();
+          const text = await res.text();
+          let data = {};
+
+          try {
+            data = text ? JSON.parse(text) : {};
+          } catch (parseErr) {
+            throw new Error(`Invalid response from server: ${text}`);
+          }
+
+          if (!res.ok) {
+            throw new Error(data.error || data.message || `Request failed (${res.status})`);
+          }
 
           markersLayer.clearLayers();
 
-          data.features.forEach((feature) => {
+          (data.features || []).forEach((feature) => {
             addMarker(feature);
           });
 
-          document.getElementById("status").textContent = `${data.features.length} entries on map`;
+          if (data.warning) {
+            document.getElementById("status").textContent = data.warning;
+          } else {
+            document.getElementById("status").textContent = `${(data.features || []).length} entries on map`;
+          }
         } catch (err) {
           console.error("Error loading points:", err);
-          document.getElementById("status").textContent = "Error loading map";
+          document.getElementById("status").textContent = err.message || "Error loading map";
         }
       }
 
