@@ -143,13 +143,6 @@
       });
     }
 
-    if (location.protocol === "https:") {
-      const warnEl = document.getElementById("warning");
-      if (warnEl) {
-        warnEl.textContent = "The page is loaded via HTTPS but the backend is HTTP. Use http://localhost:3000 or configure HTTPS for the server.";
-      }
-    }
-
     if (typeof L === "undefined") {
       console.error("Leaflet failed to load");
       document.getElementById("status").textContent = "Map library failed to load";
@@ -199,7 +192,7 @@
 
       async function loadPoints() {
         try {
-          const res = await fetch("/api/points");
+          const res = await fetch(window.location.origin + "/api/points");
           const data = await res.json();
 
           markersLayer.clearLayers();
@@ -332,7 +325,7 @@
         };
 
         try {
-          const res = await fetch("/api/submit", {
+          const res = await fetch(window.location.origin + "/api/submit", {
             method: "POST",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify(formData)
@@ -358,11 +351,7 @@
             messageEl.innerHTML = `<div class="error">${result.error || result.message || "Unknown error"}</div>`;
           }
         } catch (err) {
-          let msg = err.message || "Network error";
-          if (location.protocol === "https:") {
-            msg += " (check that the server is running with HTTPS or use HTTP)";
-          }
-          messageEl.innerHTML = `<div class="error">${msg}</div>`;
+          messageEl.innerHTML = `<div class="error">${err.message || "Network error"}</div>`;
         }
       });
 
@@ -390,7 +379,7 @@
           if (!confirm("Are you sure you want to delete this entry?")) return;
 
           try {
-            const res = await fetch(`/api/submit/${id}` + (token ? `?token=${encodeURIComponent(token)}` : ""), {
+            const res = await fetch(window.location.origin + `/api/submit/${id}` + (token ? `?token=${encodeURIComponent(token)}` : ""), {
               method: "DELETE"
             });
 
