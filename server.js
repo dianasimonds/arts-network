@@ -10,6 +10,22 @@ const app = express();
 const Submission = require("./models/Submission");
 let mongoReady = false;
 
+function normalizeMongoUri(rawUri) {
+  if (!rawUri) {
+    return "mongodb://127.0.0.1:27017/arts-network-map";
+  }
+
+  try {
+    const parsed = new URL(rawUri);
+    if (!parsed.pathname || parsed.pathname === "/") {
+      parsed.pathname = "/railway";
+    }
+    return parsed.toString();
+  } catch (error) {
+    return rawUri;
+  }
+}
+
 app.use(cors());
 // helmet provides various security headers. disable default CSP so we can load
 // external scripts/styles (Leaflet from CDN, etc.) during development.
@@ -25,13 +41,18 @@ mongoose.set("strictQuery", true);
 
 // try to connect using helper, fall back to a local URI if missing
 const startMongo = async () => {
-  const mongoUri = process.env.MONGODB_URI || "mongodb://127.0.0.1:27017/arts-network-map";
+  const mongoUri = normalizeMongoUri(
+    process.env.MONGODB_URI ||
+    process.env.DATABASE_URL ||
+    "mongodb://127.0.0.1:27017/arts-network-map"
+  );
   try {
     await mongoose.connect(mongoUri, {
       maxPoolSize: 10,
       serverSelectionTimeoutMS: 5000 // fail faster
     });
     mongoReady = true;
+    console.log("Mongo target:", mongoUri.replace(/\/\/([^:]+):([^@]+)@/, "//***:***@"));
     console.log("✅ MongoDB connected");
   } catch (err) {
     mongoReady = false;
